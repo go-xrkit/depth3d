@@ -1,0 +1,100 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  workflows:
+    name: workflows parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # A workflow that fails to PARSE reports nothing at all: no jobs run, no
+      # checks appear, and the pull request looks unexercised rather than
+      # broken. This is the only lane that would notice.
+      - name: actionlint
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
+
+  gofmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v5
+        with: { go-version: stable }
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::these files are not gofmt-clean:"; echo "$unformatted"
+            exit 1
+          fi
+
+  darwin:
+    name: darwin (the platform the accelerated path runs on)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v5
+        with: { go-version: stable }
+      - run: CGO_ENABLED=0 go vet ./...
+      - run: CGO_ENABLED=0 go build ./...
+      - run: CGO_ENABLED=0 go test -count=1 -coverprofile=cover.out ./...
+      - run: CGO_ENABLED=1 go test -race -count=1 ./...
+      # The gate is on the PORTABLE files. The accelerated path needs a GPU and
+      # a depth model, and a runner has neither -- so its tests skip, and a
+      # total-coverage gate would be a number chosen to pass rather than a
+      # standard. What DOES run everywhere is the sizing, the defaults, the
+      # fall back and the synthesis on the processor.
+      - name: 100% coverage gate on the portable logic
+        shell: bash
+        run: |
+          go tool cover -func=cover.out | grep -E '/(depth3d|cues|cuesnew)\.go:' > portable.txt
+          cat portable.txt
+          if grep -v '100.0%' portable.txt; then
+            echo "::error::the portable logic is below 100% (lines above)"; exit 1
+          fi
+          echo "portable logic: 100%"
+
+  cross:
+    name: cross ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # All six of Go's 64-bit targets. s390x is big-endian and is the
+          # one that would notice a byte order assumed rather than written.
+          - { goos: linux, goarch: amd64 }
+          - { goos: linux, goarch: arm64 }
+          - { goos: linux, goarch: riscv64 }
+          - { goos: linux, goarch: loong64 }
+          - { goos: linux, goarch: ppc64le }
+          - { goos: linux, goarch: s390x }
+          - { goos: windows, goarch: amd64 }
+          - { goos: windows, goarch: arm64 }
+          - { goos: darwin, goarch: amd64 }
+          - { goos: darwin, goarch: arm64 }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v5
+        with: { go-version: stable }
+      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build ./...
+      - run: CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go vet ./...
+
+  linux:
+    name: linux (portable logic)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v5
+        with: { go-version: stable }
+      - run: CGO_ENABLED=0 go test -count=1 ./...
