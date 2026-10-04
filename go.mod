@@ -1,6 +1,6 @@
 module github.com/go-xrkit/depth3d
 
-go 1.26.4
+go 1.27.1
 
 require (
 	github.com/go-images/depth v0.4.0
