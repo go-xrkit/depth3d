@@ -1,10 +1,10 @@
-github.com/ebitengine/purego v0.11.1 h1:2zpWRSQNVKN4eKsKO9eM1ILDgWfYMY9GwqRmK6XeQ/0=
-github.com/ebitengine/purego v0.11.1/go.mod h1:DCHPP08djqhNSoTfImcnHYQRZmd0qhakvrozqaEYhGQ=
+github.com/ebitengine/purego v0.11.3 h1:OB+JLpdm7ioymhyA+6s5kbb/uOuYycAgL8NNTFc5MLg=
+github.com/ebitengine/purego v0.11.3/go.mod h1:DCHPP08djqhNSoTfImcnHYQRZmd0qhakvrozqaEYhGQ=
 github.com/go-images/depth v0.5.0 h1:zRi3+gERBqJ6ahJtJXurYbdmRkRGMQbqKIRg/HiPL/0=
 github.com/go-images/depth v0.5.0/go.mod h1:HRbR7c71admYRrKzEJdDFtV4Ftto+GFUN55ehka1TPM=
 github.com/go-macos/coreml v0.3.0 h1:mjPjbmLs04P3gcSJjl5g/56vmLcVF2/EZcsVC/I+bL4=
 github.com/go-macos/coreml v0.3.0/go.mod h1:q/3mlZatF2e+Jv8LyeN3sJw6E3iHKtsROl/fZmGhsYk=
-github.com/go-macos/metal v0.3.0 h1:GEEv+ur1d+gzbYB83/1Nn/ET/3o28zDDFk9Eijkz0o8=
-github.com/go-macos/metal v0.3.0/go.mod h1:oKJWRz0uQl/THo2tvPjGnpC+80rr6iT2wD4NOTv5Jwc=
-github.com/go-macos/objc v0.10.2 h1:WX8CsDT6SbDrIT2wHAZEQBhGcpKR750llRS4oAfX9ww=
-github.com/go-macos/objc v0.10.2/go.mod h1:68hzSUlhg5bFbg1kO0z4DM6xOk4B/IofuxdlyhHHtt8=
+github.com/go-macos/metal v0.6.0 h1:17qzYBLWo9D6zfiHC3YqKs6LJivke2MJ0Y1U51311FE=
+github.com/go-macos/metal v0.6.0/go.mod h1:BiclSGJgONDekug12CQtlINic9zMmXF7m/iA7bQn4hM=
+github.com/go-macos/objc v0.12.0 h1:/WmB4C1CQd5RkqBRvnHNljEFtOTvytPA9fkD87xuJVQ=
+github.com/go-macos/objc v0.12.0/go.mod h1:ao+SmTFBrkZdP+488hFTrSFvCtJ36McKKhNNOlcFXrQ=
