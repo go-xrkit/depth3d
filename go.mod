@@ -5,7 +5,7 @@ go 1.27.1
 require (
 	github.com/go-images/depth v0.5.0
 	github.com/go-macos/coreml v0.3.0
-	github.com/go-macos/metal v0.6.0
+	github.com/go-macos/metal v0.7.0
 )
 
 require (
